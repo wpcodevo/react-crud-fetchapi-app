@@ -14,10 +14,10 @@ In this tutorial, you'll learn how to build a React.js CRUD application with Jav
 - Add Zustand State Manager
 - Create Reusable Components
 - Add the CRUD Components
-    - CREATE CRUD Component
-    - UPDATE CRUD Component
-    - DELETE CRUD Component
-    - READ CRUD Component
+    - Implement the CREATE Operation
+    - Implement the UPDATE Operation
+    - Implement the DELETE Operation
+    - Implement the READ Operation
 - Test the CRUD App
     - CREATE CRUD Functionality
     - READ CRUD Functionality
