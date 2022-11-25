@@ -1,4 +1,4 @@
-import { FC, useEffect } from "react";
+import { FC, useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { twMerge } from "tailwind-merge";
 import { object, string, TypeOf } from "zod";
@@ -24,6 +24,7 @@ const updateNoteSchema = object({
 export type UpdateNoteInput = TypeOf<typeof updateNoteSchema>;
 
 const UpdateNote: FC<IUpdateNoteProps> = ({ note, setOpenNoteModal }) => {
+  const [loading, setLoading] = useState(false);
   const noteStore = useStore();
   const methods = useForm<UpdateNoteInput>({
     resolver: zodResolver(updateNoteSchema),
@@ -51,6 +52,7 @@ const UpdateNote: FC<IUpdateNoteProps> = ({ note, setOpenNoteModal }) => {
   }) => {
     try {
       NProgress.start();
+      setLoading(true);
       const response = await fetch(`${BASE_URL}/notes/${noteId}`, {
         method: "PATCH",
         mode: "cors",
@@ -66,6 +68,7 @@ const UpdateNote: FC<IUpdateNoteProps> = ({ note, setOpenNoteModal }) => {
       }
       const data = (await response.json()) as INoteResponse;
       noteStore.updateNote(data.note);
+      setLoading(false);
       setOpenNoteModal(false);
       NProgress.done();
       toast("Note updated successfully", {
@@ -73,6 +76,7 @@ const UpdateNote: FC<IUpdateNoteProps> = ({ note, setOpenNoteModal }) => {
         position: "top-right",
       });
     } catch (error: any) {
+      setLoading(false);
       setOpenNoteModal(false);
       NProgress.done();
       const resMessage = error.message || error.detail || error.toString();
@@ -138,7 +142,7 @@ const UpdateNote: FC<IUpdateNoteProps> = ({ note, setOpenNoteModal }) => {
             {errors.content && errors.content.message}
           </p>
         </div>
-        <LoadingButton loading={false}>Update Note</LoadingButton>
+        <LoadingButton loading={loading}>Update Note</LoadingButton>
       </form>
     </section>
   );

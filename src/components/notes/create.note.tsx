@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { twMerge } from "tailwind-merge";
 import { object, string, TypeOf } from "zod";
@@ -23,6 +23,7 @@ const createNoteSchema = object({
 export type CreateNoteInput = TypeOf<typeof createNoteSchema>;
 
 const CreateNote: FC<ICreateNoteProps> = ({ setOpenNoteModal }) => {
+  const [loading, setLoading] = useState(false);
   const noteStore = useStore();
   const methods = useForm<CreateNoteInput>({
     resolver: zodResolver(createNoteSchema),
@@ -37,6 +38,7 @@ const CreateNote: FC<ICreateNoteProps> = ({ setOpenNoteModal }) => {
   const createNote = async (note: CreateNoteInput) => {
     try {
       NProgress.start();
+      setLoading(true);
       const response = await fetch(`${BASE_URL}/notes/`, {
         method: "POST",
         mode: "cors",
@@ -54,6 +56,7 @@ const CreateNote: FC<ICreateNoteProps> = ({ setOpenNoteModal }) => {
       const data = (await response.json()) as INoteResponse;
       noteStore.createNote(data.note);
 
+      setLoading(false);
       setOpenNoteModal(false);
       NProgress.done();
       toast("Note created successfully", {
@@ -61,6 +64,7 @@ const CreateNote: FC<ICreateNoteProps> = ({ setOpenNoteModal }) => {
         position: "top-right",
       });
     } catch (error: any) {
+      setLoading(false);
       setOpenNoteModal(false);
       NProgress.done();
       const resMessage = error.message || error.detail || error.toString();
@@ -126,7 +130,7 @@ const CreateNote: FC<ICreateNoteProps> = ({ setOpenNoteModal }) => {
             {errors.content && errors.content.message}
           </p>
         </div>
-        <LoadingButton loading={false}>Create Note</LoadingButton>
+        <LoadingButton loading={loading}>Create Note</LoadingButton>
       </form>
     </section>
   );
