@@ -67,7 +67,7 @@ const UpdateNote: FC<IUpdateNoteProps> = ({ note, setOpenNoteModal }) => {
         throw error ? error : "Something bad happended";
       }
       const data = (await response.json()) as INoteResponse;
-      noteStore.updateNote(data.note);
+      noteStore.updateNote(data.data.note);
       setLoading(false);
       setOpenNoteModal(false);
       NProgress.done();
@@ -139,7 +139,7 @@ const UpdateNote: FC<IUpdateNoteProps> = ({ note, setOpenNoteModal }) => {
               `${errors.content ? "visible" : "invisible"}`
             )}
           >
-            {errors.content && errors.content.message}
+            {errors.content && (errors.content.message as string)}
           </p>
         </div>
         <LoadingButton loading={loading}>Update Note</LoadingButton>

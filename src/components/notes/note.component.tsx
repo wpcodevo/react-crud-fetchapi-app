@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { format, parseISO } from "date-fns";
 import { twMerge } from "tailwind-merge";
 import NoteModal from "../note.modal";
@@ -18,6 +18,22 @@ const NoteItem: FC<NoteItemProps> = ({ note }) => {
   const noteStore = useStore();
   const [openSettings, setOpenSettings] = useState(false);
   const [openNoteModal, setOpenNoteModal] = useState(false);
+
+  useEffect(() => {
+    const handleOutsideClick = (event: MouseEvent) => {
+      const target = event.target as HTMLElement;
+      const dropdown = document.getElementById("settings-dropdown");
+
+      if (dropdown && !dropdown.contains(target)) {
+        setOpenSettings(false);
+      }
+    };
+    document.addEventListener("mousedown", handleOutsideClick);
+
+    return () => {
+      document.removeEventListener("mousedown", handleOutsideClick);
+    };
+  }, []);
 
   const deleteNote = async (noteId: string) => {
     try {
@@ -48,11 +64,13 @@ const NoteItem: FC<NoteItemProps> = ({ note }) => {
     }
   };
 
+  console.log({ note_id: note.id });
   const onDeleteHandler = (noteId: string) => {
     if (window.confirm("Are you sure")) {
       deleteNote(noteId);
     }
   };
+
   return (
     <>
       <div className="p-4 bg-white rounded-lg border border-gray-200 shadow-md flex flex-col justify-between overflow-hidden">
@@ -79,7 +97,7 @@ const NoteItem: FC<NoteItemProps> = ({ note }) => {
             <i className="bx bx-dots-horizontal-rounded"></i>
           </div>
           <div
-            id="settings-dropdown"
+            id={`settings-dropdown-${note.id}`}
             className={twMerge(
               `absolute right-0 bottom-3 z-10 w-28 text-base list-none bg-white rounded divide-y divide-gray-100 shadow`,
               `${openSettings ? "block" : "hidden"}`

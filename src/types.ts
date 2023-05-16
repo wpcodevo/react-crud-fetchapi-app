@@ -13,7 +13,9 @@ export type IGenericResponse = {
 
 export type INoteResponse = {
   status: string;
-  note: INote;
+  data: {
+    note: INote;
+  };
 };
 
 export type INotesResponse = {

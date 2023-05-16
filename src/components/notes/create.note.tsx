@@ -54,7 +54,7 @@ const CreateNote: FC<ICreateNoteProps> = ({ setOpenNoteModal }) => {
       }
 
       const data = (await response.json()) as INoteResponse;
-      noteStore.createNote(data.note);
+      noteStore.createNote(data.data.note);
 
       setLoading(false);
       setOpenNoteModal(false);
@@ -127,7 +127,7 @@ const CreateNote: FC<ICreateNoteProps> = ({ setOpenNoteModal }) => {
               `${errors.content ? "visible" : "invisible"}`
             )}
           >
-            {errors.content && errors.content.message}
+            {errors.content && (errors.content.message as string)}
           </p>
         </div>
         <LoadingButton loading={loading}>Create Note</LoadingButton>
