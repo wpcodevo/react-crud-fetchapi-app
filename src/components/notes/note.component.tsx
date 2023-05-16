@@ -22,7 +22,7 @@ const NoteItem: FC<NoteItemProps> = ({ note }) => {
   useEffect(() => {
     const handleOutsideClick = (event: MouseEvent) => {
       const target = event.target as HTMLElement;
-      const dropdown = document.getElementById("settings-dropdown");
+      const dropdown = document.getElementById(`settings-dropdown-${note.id}`);
 
       if (dropdown && !dropdown.contains(target)) {
         setOpenSettings(false);
