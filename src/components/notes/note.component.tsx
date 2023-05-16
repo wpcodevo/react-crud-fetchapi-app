@@ -33,7 +33,7 @@ const NoteItem: FC<NoteItemProps> = ({ note }) => {
     return () => {
       document.removeEventListener("mousedown", handleOutsideClick);
     };
-  }, []);
+  }, [note.id]);
 
   const deleteNote = async (noteId: string) => {
     try {
@@ -64,7 +64,6 @@ const NoteItem: FC<NoteItemProps> = ({ note }) => {
     }
   };
 
-  console.log({ note_id: note.id });
   const onDeleteHandler = (noteId: string) => {
     if (window.confirm("Are you sure")) {
       deleteNote(noteId);
